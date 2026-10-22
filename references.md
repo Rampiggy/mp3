@@ -12,3 +12,8 @@
 - https://expressjs.com/en/5x/api/express/
 - https://expressjs.com/en/5x/api/application/#appuse
 - https://expressjs.com/en/5x/api/router/#routerroute
+
+## TypeScript
+
+- https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html
+  - TODO: Get this working in deployment and then try converting this project to TS
