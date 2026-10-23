@@ -13,6 +13,13 @@
 - https://expressjs.com/en/5x/api/application/#appuse
 - https://expressjs.com/en/5x/api/router/#routerroute
 - https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Server-side/Express_Nodejs/routes
+- https://www.youtube.com/watch?v=V2_lSMpp2b8
+- https://expressjs.com/en/5x/api/request/
+- https://expressjs.com/en/5x/api/response/
+
+## Mongoose
+
+- https://mongoosejs.com/docs/index.html
 
 ## TypeScript
 
