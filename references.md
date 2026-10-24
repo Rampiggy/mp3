@@ -20,6 +20,9 @@
 ## Mongoose
 
 - https://mongoosejs.com/docs/index.html
+- https://stackoverflow.com/questions/12495891/what-is-the-v-field-in-mongoose
+- https://mongoosejs.com/docs/documents.html
+- https://www.reddit.com/r/node/comments/eezkp1/converting_circular_structure_to_json_error_when/
 
 ## TypeScript
 
