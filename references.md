@@ -28,3 +28,8 @@
 
 - https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html
   - TODO: Get this working in deployment and then try converting this project to TS
+
+## JavaScript
+
+- https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing
