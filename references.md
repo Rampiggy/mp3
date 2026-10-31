@@ -28,3 +28,4 @@
 
 - https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
 - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing
+- https://softwareengineering.stackexchange.com/questions/402369/good-practice-for-javascript-es6-data-objects

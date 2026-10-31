@@ -5,13 +5,28 @@ module.exports = function (router) {
 
 	usersRoute.get(async function (_, res) {
 		const users = await User.find().lean();
-		res.status(200).json(users);
+
+		const usersResponse = {
+			message: "OK",
+			data: users,
+		};
+		res.status(200).json(usersResponse);
 	});
 
 	usersRoute.post(async function (req, res) {
-		const newUser = new User({ name: req.body.name });
+		const newUser = new User({
+			name: req.body.name,
+			email: req.body.email,
+			pendingTasks: req.body.pendingTasks ?? [],
+			dateCreated: new Date(),
+		});
 		await newUser.save();
-		res.status(201).json(newUser);
+
+		const userResponse = {
+			message: "OK",
+			data: newUser,
+		};
+		res.status(201).json(userResponse);
 	});
 
 	return router;
