@@ -24,11 +24,6 @@
 - https://mongoosejs.com/docs/documents.html
 - https://www.reddit.com/r/node/comments/eezkp1/converting_circular_structure_to_json_error_when/
 
-## TypeScript
-
-- https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html
-  - TODO: Get this working in deployment and then try converting this project to TS
-
 ## JavaScript
 
 - https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
