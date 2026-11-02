@@ -1,0 +1,78 @@
+const mongoose = require("mongoose");
+const Task = require("../models/task.js");
+
+async function getTask(req, res) {
+	const rawId = req.params.id;
+
+	let taskId = null;
+	try {
+		taskId = new mongoose.Types.ObjectId(rawId);
+	} catch {
+		const taskResponse = {
+			message: `Not found. '${rawId}' does not parse to a valid task ID.`,
+		};
+		res.status(404).json(taskResponse);
+		return null;
+	}
+
+	const task = await Task.findOne({ _id: taskId });
+	if (task === null) {
+		const taskResponse = {
+			message: `Not found. Task ID '${taskId}' was not found.`,
+		};
+		res.status(404).json(taskResponse);
+		return null;
+	}
+
+	return task;
+}
+
+function taskRouter(router) {
+	const taskRoute = router.route("/tasks/:id");
+
+	taskRoute.get(async function (req, res) {
+		const currTask = await getTask(req, res);
+
+		if (currTask === null) return;
+
+		const taskResponse = {
+			message: "OK",
+			data: currTask,
+		};
+		res.status(200).json(taskResponse);
+	});
+
+	taskRoute.put(async function (req, res) {
+		const taskToUpdate = await getTask(req, res);
+
+		if (taskToUpdate === null) return;
+
+		taskToUpdate.name = req.body.name;
+		taskToUpdate.email = req.body.email;
+		taskToUpdate.pendingTasks = req.body.pendingTasks ?? [];
+		await taskToUpdate.save();
+
+		const taskResponse = {
+			message: "OK",
+			data: taskToUpdate,
+		};
+		res.status(200).json(taskResponse);
+	});
+
+	taskRoute.delete(async function (req, res) {
+		const taskToDelete = await getTask(req, res);
+
+		if (taskToDelete === null) return;
+
+		await Task.deleteOne({ _id: taskToDelete._id });
+
+		const taskResponse = {
+			message: "OK",
+		};
+		res.status(200).json(taskResponse);
+	});
+
+	return router;
+}
+
+module.exports = { getTask, taskRouter };

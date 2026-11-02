@@ -9,7 +9,7 @@ async function getUser(req, res) {
 		userId = new mongoose.Types.ObjectId(rawId);
 	} catch {
 		const userResponse = {
-			message: `Not found. '${rawId}' is not a valid user ID.`,
+			message: `Not found. '${rawId}' does not parse to a valid user ID.`,
 		};
 		res.status(404).json(userResponse);
 		return null;
@@ -27,7 +27,7 @@ async function getUser(req, res) {
 	return user;
 }
 
-module.exports = function (router) {
+function userRouter(router) {
 	const userRoute = router.route("/users/:id");
 
 	userRoute.get(async function (req, res) {
@@ -73,4 +73,6 @@ module.exports = function (router) {
 	});
 
 	return router;
-};
+}
+
+module.exports = { getUser, userRouter };
