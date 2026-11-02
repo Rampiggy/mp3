@@ -1,30 +1,7 @@
 const mongoose = require("mongoose");
 const Task = require("../models/task.js");
-const getUser = require("./user.js").getUser;
-
-async function getTask(rawId, res) {
-	let taskId = null;
-	try {
-		taskId = new mongoose.Types.ObjectId(rawId);
-	} catch {
-		const taskResponse = {
-			message: `Not found. '${rawId}' does not parse to a valid task ID.`,
-		};
-		res.status(404).json(taskResponse);
-		return null;
-	}
-
-	const task = await Task.findOne({ _id: taskId });
-	if (task === null) {
-		const taskResponse = {
-			message: `Not found. Task ID '${taskId}' was not found.`,
-		};
-		res.status(404).json(taskResponse);
-		return null;
-	}
-
-	return task;
-}
+const getUser = require("../models/user.js").getUser;
+const getTask = require("../models/task.js").getTask;
 
 function taskRouter(router) {
 	const taskRoute = router.route("/tasks/:id");
@@ -46,6 +23,7 @@ function taskRouter(router) {
 
 		if (taskToUpdate === null) return;
 
+		const session = await mongoose.startSession();
 		let isSuccessful = true;
 		session.withTransaction(async () => {
 			const unassignUser = await getUser(taskToDelete.assignedUser, res);

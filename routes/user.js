@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("../models/user.js");
-const getTask = require("./task.js").getTask;
+const getUser = require("../models/user.js").getUser;
+const getTask = require("../models/task.js").getTask;
 
 function userRouter(router) {
 	const userRoute = router.route("/users/:id");
@@ -18,11 +19,11 @@ function userRouter(router) {
 	});
 
 	userRoute.put(async function (req, res) {
-		const session = await mongoose.startSession();
 		const userToUpdate = await getUser(req.params.id, res);
 
 		if (userToUpdate === null) return;
 
+		const session = await mongoose.startSession();
 		let isSuccessful = true;
 		session.withTransaction(async () => {
 			userToUpdate.pendingTasks.forEach(async (taskId) => {
