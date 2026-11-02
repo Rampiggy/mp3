@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Task = require("../models/task.js");
+const getUser = require("./user.js").getUser;
 
 async function getTask(rawId, res) {
 	let taskId = null;
@@ -47,7 +48,7 @@ function taskRouter(router) {
 
 		let isSuccessful = true;
 		session.withTransaction(async () => {
-			const unassignUser = await getUser(taskToDelete.assignedUser);
+			const unassignUser = await getUser(taskToDelete.assignedUser, res);
 
 			if (unassignUser === null) {
 				isSuccessful = false;
@@ -62,7 +63,10 @@ function taskRouter(router) {
 			await unassignUser.save();
 
 			if (req.body.assignedUser != "") {
-				const assignUser = await getUser(taskToDelete.assignedUser);
+				const assignUser = await getUser(
+					taskToDelete.assignedUser,
+					res,
+				);
 
 				if (assignUser === null) {
 					isSuccessful = false;
@@ -95,7 +99,7 @@ function taskRouter(router) {
 
 		if (taskToDelete === null) return;
 
-		const userToUpdate = await getUser(taskToDelete.assignedUser);
+		const userToUpdate = await getUser(taskToDelete.assignedUser, res);
 		userToUpdate.pendingTasks = userToUpdate.pendingTasks.filter(
 			(taskId) => {
 				taskId != taskToDelete._id;

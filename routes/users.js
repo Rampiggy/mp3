@@ -1,4 +1,5 @@
 const User = require("../models/user.js");
+const getTask = require("./task.js").getTask;
 
 module.exports = function (router) {
 	var usersRoute = router.route("/users");
@@ -23,7 +24,7 @@ module.exports = function (router) {
 		await newUser.save();
 
 		newUser.pendingTasks.forEach(async (taskId) => {
-			const taskToUpdate = await getTask(taskId);
+			const taskToUpdate = await getTask(taskId, res);
 			taskToUpdate.assignedUser = userToUpdate._id;
 			taskToUpdate.assignedUserName = userToUpdate.name;
 			await taskToUpdate.save();

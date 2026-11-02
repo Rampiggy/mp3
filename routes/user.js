@@ -26,7 +26,7 @@ function userRouter(router) {
 		let isSuccessful = true;
 		session.withTransaction(async () => {
 			userToUpdate.pendingTasks.forEach(async (taskId) => {
-				const taskToUnassign = await getTask(taskId);
+				const taskToUnassign = await getTask(taskId, res);
 
 				if (taskToUnassign === null) {
 					isSuccessful = false;
@@ -39,7 +39,7 @@ function userRouter(router) {
 			});
 
 			req.body.pendingTasks.forEach(async (taskId) => {
-				const taskToUpdate = await getTask(taskId);
+				const taskToUpdate = await getTask(taskId, res);
 
 				if (taskToUpdate === null) {
 					isSuccessful = false;

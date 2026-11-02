@@ -1,4 +1,5 @@
 const Task = require("../models/task.js");
+const getUser = require("./user.js").getUser;
 
 module.exports = function (router) {
 	var tasksRoute = router.route("/tasks");
@@ -24,6 +25,10 @@ module.exports = function (router) {
 			dateCreated: new Date(),
 		});
 		await newTask.save();
+
+		const userToUpdate = await getUser(newTask.assignedUser, res);
+		userToUpdate.pendingTasks.push(newTask._id);
+		await userToUpdate.save();
 
 		const taskResponse = {
 			message: "OK",
