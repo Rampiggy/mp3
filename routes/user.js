@@ -2,37 +2,11 @@ const mongoose = require("mongoose");
 const User = require("../models/user.js");
 const getTask = require("./task.js").getTask;
 
-async function getUser(req, res) {
-	const rawId = req.params.id;
-
-	let userId = null;
-	try {
-		userId = new mongoose.Types.ObjectId(rawId);
-	} catch {
-		const userResponse = {
-			message: `Not found. '${rawId}' does not parse to a valid user ID.`,
-		};
-		res.status(404).json(userResponse);
-		return null;
-	}
-
-	const user = await User.findOne({ _id: userId });
-	if (user === null) {
-		const userResponse = {
-			message: `Not found. User ID '${userId}' was not found.`,
-		};
-		res.status(404).json(userResponse);
-		return null;
-	}
-
-	return user;
-}
-
 function userRouter(router) {
 	const userRoute = router.route("/users/:id");
 
 	userRoute.get(async function (req, res) {
-		const currUser = await getUser(req, res);
+		const currUser = await getUser(req.params.id, res);
 
 		if (currUser === null) return;
 
@@ -44,14 +18,46 @@ function userRouter(router) {
 	});
 
 	userRoute.put(async function (req, res) {
-		const userToUpdate = await getUser(req, res);
+		const session = await mongoose.startSession();
+		const userToUpdate = await getUser(req.params.id, res);
 
 		if (userToUpdate === null) return;
 
-		userToUpdate.name = req.body.name;
-		userToUpdate.email = req.body.email;
-		userToUpdate.pendingTasks = req.body.pendingTasks ?? [];
-		await userToUpdate.save();
+		let isSuccessful = true;
+		session.withTransaction(async () => {
+			userToUpdate.pendingTasks.forEach(async (taskId) => {
+				const taskToUnassign = await getTask(taskId);
+
+				if (taskToUnassign === null) {
+					isSuccessful = false;
+					throw Error;
+				}
+
+				taskToUnassign.assignedUser = "";
+				taskToUnassign.assignedUserName = "unassigned";
+				await taskToUnassign.save();
+			});
+
+			req.body.pendingTasks.forEach(async (taskId) => {
+				const taskToUpdate = await getTask(taskId);
+
+				if (taskToUpdate === null) {
+					isSuccessful = false;
+					throw Error;
+				}
+
+				taskToUpdate.assignedUser = userToUpdate._id;
+				taskToUpdate.assignedUserName = userToUpdate.name;
+				await taskToUpdate.save();
+			});
+
+			userToUpdate.name = req.body.name;
+			userToUpdate.email = req.body.email;
+			userToUpdate.pendingTasks = req.body.pendingTasks ?? [];
+			await userToUpdate.save();
+		});
+
+		if (!isSuccessful) return;
 
 		const userResponse = {
 			message: "OK",
@@ -61,12 +67,12 @@ function userRouter(router) {
 	});
 
 	userRoute.delete(async function (req, res) {
-		const userToDelete = await getUser(req, res);
+		const userToDelete = await getUser(req.params.id, res);
 
 		if (userToDelete === null) return;
 
-		await userToDelete.pendingTasks.forEach(async (task) => {
-			const taskToUnassign = getTask(task._id, res);
+		userToDelete.pendingTasks.forEach(async (task) => {
+			const taskToUnassign = await getTask(task._id, res);
 			taskToUnassign.assignedUser = "";
 			taskToUnassign.assignedUserName = "unassigned";
 			await taskToUnassign.save();
