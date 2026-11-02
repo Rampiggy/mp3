@@ -45,13 +45,43 @@ function taskRouter(router) {
 
 		if (taskToUpdate === null) return;
 
-		taskToUpdate.name = req.body.name;
-		taskToUpdate.description = req.body.description;
-		taskToUpdate.deadline = req.body.deadline;
-		taskToUpdate.completed = req.body.completed;
-		taskToUpdate.assignedUser = req.body.assignedUser ?? "";
-		taskToUpdate.assignedUserName = req.body.assignedUser ?? "unassigned";
-		await taskToUpdate.save();
+		let isSuccessful = true;
+		session.withTransaction(async () => {
+			const unassignUser = await getUser(taskToDelete.assignedUser);
+
+			if (unassignUser === null) {
+				isSuccessful = false;
+				throw Error;
+			}
+
+			unassignUser.pendingTasks = unassignUser.pendingTasks.filter(
+				(taskId) => {
+					taskId != taskToUpdate._id;
+				},
+			);
+			await unassignUser.save();
+
+			if (req.body.assignedUser != "") {
+				const assignUser = await getUser(taskToDelete.assignedUser);
+
+				if (assignUser === null) {
+					isSuccessful = false;
+					throw Error;
+				}
+
+				assignUser.pendingTasks.push(taskToUpdate._id);
+				await assignUser.save();
+			}
+
+			taskToUpdate.name = req.body.name;
+			taskToUpdate.description = req.body.description;
+			taskToUpdate.deadline = req.body.deadline;
+			taskToUpdate.completed = req.body.completed;
+			taskToUpdate.assignedUser = req.body.assignedUser ?? "";
+			taskToUpdate.assignedUserName =
+				req.body.assignedUser ?? "unassigned";
+			await taskToUpdate.save();
+		});
 
 		const taskResponse = {
 			message: "OK",
@@ -64,6 +94,14 @@ function taskRouter(router) {
 		const taskToDelete = await getTask(req.params.id, res);
 
 		if (taskToDelete === null) return;
+
+		const userToUpdate = await getUser(taskToDelete.assignedUser);
+		userToUpdate.pendingTasks = userToUpdate.pendingTasks.filter(
+			(taskId) => {
+				taskId != taskToDelete._id;
+			},
+		);
+		userToUpdate.save();
 
 		await Task.deleteOne({ _id: taskToDelete._id });
 

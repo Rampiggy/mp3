@@ -26,6 +26,7 @@
 - https://stackoverflow.com/questions/6578178/node-js-mongoose-js-string-to-objectid-function
 - https://mongoosejs.com/docs/documents.html#updating-using-save
 - https://mongoosejs.com/docs/models.html#deleting
+- https://mongodb.github.io/node-mongodb-native/7.0/classes/ClientSession.html#withTransaction
 
 ## JavaScript
 
@@ -33,6 +34,7 @@
 - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing
 - https://softwareengineering.stackexchange.com/questions/402369/good-practice-for-javascript-es6-data-objects
 - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 
 ## Postman
 

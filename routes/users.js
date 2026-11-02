@@ -22,6 +22,13 @@ module.exports = function (router) {
 		});
 		await newUser.save();
 
+		newUser.pendingTasks.forEach(async (taskId) => {
+			const taskToUpdate = await getTask(taskId);
+			taskToUpdate.assignedUser = userToUpdate._id;
+			taskToUpdate.assignedUserName = userToUpdate.name;
+			await taskToUpdate.save();
+		});
+
 		const userResponse = {
 			message: "OK",
 			data: newUser,
