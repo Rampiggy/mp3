@@ -24,6 +24,8 @@
 - https://mongoosejs.com/docs/documents.html
 - https://www.reddit.com/r/node/comments/eezkp1/converting_circular_structure_to_json_error_when/
 - https://stackoverflow.com/questions/6578178/node-js-mongoose-js-string-to-objectid-function
+- https://mongoosejs.com/docs/documents.html#updating-using-save
+- https://mongoosejs.com/docs/models.html#deleting
 
 ## JavaScript
 

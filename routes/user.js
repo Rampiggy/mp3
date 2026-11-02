@@ -59,5 +59,18 @@ module.exports = function (router) {
 		res.status(200).json(userResponse);
 	});
 
+	userRoute.delete(async function (req, res) {
+		const userToDelete = await getUser(req, res);
+
+		if (userToDelete === null) return;
+
+		await User.deleteOne({ _id: userToDelete._id });
+
+		const userResponse = {
+			message: "OK",
+		};
+		res.status(200).json(userResponse);
+	});
+
 	return router;
 };
