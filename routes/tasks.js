@@ -5,7 +5,12 @@ module.exports = function (router) {
 
 	tasksRoute.get(async function (_, res) {
 		const tasks = await Task.find().lean();
-		res.status(200).json(tasks);
+
+		const tasksResponse = {
+			message: "OK",
+			data: tasks,
+		};
+		res.status(200).json(tasksResponse);
 	});
 
 	tasksRoute.post(async function (req, res) {
@@ -19,7 +24,12 @@ module.exports = function (router) {
 			dateCreated: new Date(),
 		});
 		await newTask.save();
-		res.status(201).json(newTask);
+
+		const taskResponse = {
+			message: "OK",
+			data: newTask,
+		};
+		res.status(201).json(taskResponse);
 	});
 
 	return router;
