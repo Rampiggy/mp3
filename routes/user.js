@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("../models/user.js");
+const getTask = require("./task.js").getTask;
 
 async function getUser(req, res) {
 	const rawId = req.params.id;
@@ -63,6 +64,13 @@ function userRouter(router) {
 		const userToDelete = await getUser(req, res);
 
 		if (userToDelete === null) return;
+
+		await userToDelete.pendingTasks.forEach(async (task) => {
+			const taskToUnassign = getTask(task._id, res);
+			taskToUnassign.assignedUser = "";
+			taskToUnassign.assignedUserName = "unassigned";
+			await taskToUnassign.save();
+		});
 
 		await User.deleteOne({ _id: userToDelete._id });
 

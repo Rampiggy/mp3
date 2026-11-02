@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
 const Task = require("../models/task.js");
 
-async function getTask(req, res) {
-	const rawId = req.params.id;
-
+async function getTask(rawId, res) {
 	let taskId = null;
 	try {
 		taskId = new mongoose.Types.ObjectId(rawId);
@@ -31,7 +29,7 @@ function taskRouter(router) {
 	const taskRoute = router.route("/tasks/:id");
 
 	taskRoute.get(async function (req, res) {
-		const currTask = await getTask(req, res);
+		const currTask = await getTask(req.params.id, res);
 
 		if (currTask === null) return;
 
@@ -48,8 +46,11 @@ function taskRouter(router) {
 		if (taskToUpdate === null) return;
 
 		taskToUpdate.name = req.body.name;
-		taskToUpdate.email = req.body.email;
-		taskToUpdate.pendingTasks = req.body.pendingTasks ?? [];
+		taskToUpdate.description = req.body.description;
+		taskToUpdate.deadline = req.body.deadline;
+		taskToUpdate.completed = req.body.completed;
+		taskToUpdate.assignedUser = req.body.assignedUser ?? "";
+		taskToUpdate.assignedUserName = req.body.assignedUser ?? "unassigned";
 		await taskToUpdate.save();
 
 		const taskResponse = {
@@ -60,7 +61,7 @@ function taskRouter(router) {
 	});
 
 	taskRoute.delete(async function (req, res) {
-		const taskToDelete = await getTask(req, res);
+		const taskToDelete = await getTask(req.params.id, res);
 
 		if (taskToDelete === null) return;
 
