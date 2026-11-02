@@ -23,9 +23,15 @@
 - https://stackoverflow.com/questions/12495891/what-is-the-v-field-in-mongoose
 - https://mongoosejs.com/docs/documents.html
 - https://www.reddit.com/r/node/comments/eezkp1/converting_circular_structure_to_json_error_when/
+- https://stackoverflow.com/questions/6578178/node-js-mongoose-js-string-to-objectid-function
 
 ## JavaScript
 
 - https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript
 - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing
 - https://softwareengineering.stackexchange.com/questions/402369/good-practice-for-javascript-es6-data-objects
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch
+
+## Postman
+
+- https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-examples#test-grpc-responses
