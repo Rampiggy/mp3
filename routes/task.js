@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Task = require("../models/task.js");
+const Task = require("../models/task.js").Task;
 const getUser = require("../models/user.js").getUser;
 const getTask = require("../models/task.js").getTask;
 

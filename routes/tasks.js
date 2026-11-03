@@ -1,4 +1,4 @@
-const Task = require("../models/task.js");
+const Task = require("../models/task.js").Task;
 const getUser = require("../models/user.js").getUser;
 
 module.exports = function (router) {
