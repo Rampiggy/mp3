@@ -15,6 +15,8 @@ module.exports = function (router) {
 	});
 
 	usersRoute.post(async function (req, res) {
+		if (!isValidRequiredFields(req, res)) return;
+
 		const newUser = new User({
 			name: req.body.name,
 			email: req.body.email,
@@ -39,3 +41,25 @@ module.exports = function (router) {
 
 	return router;
 };
+
+function isValidRequiredFields(req, res) {
+	if (!req.body.name) {
+		const userResponse = {
+			message: "Bad request. Property 'name' is missing.",
+			data: "",
+		};
+		res.status(400).json(userResponse);
+		return false;
+	}
+
+	if (!req.body.email) {
+		const userResponse = {
+			message: "Bad request. Property 'email' is missing.",
+			data: "",
+		};
+		res.status(400).json(userResponse);
+		return false;
+	}
+
+	return true;
+}

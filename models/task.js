@@ -21,6 +21,7 @@ async function getTask(rawId, res) {
 	} catch {
 		const taskResponse = {
 			message: `Not found. '${rawId}' does not parse to a valid task ID.`,
+			data: "",
 		};
 		res.status(404).json(taskResponse);
 		return null;
@@ -30,6 +31,7 @@ async function getTask(rawId, res) {
 	if (task === null) {
 		const taskResponse = {
 			message: `Not found. Task ID '${taskId}' was not found.`,
+			data: "",
 		};
 		res.status(404).json(taskResponse);
 		return null;

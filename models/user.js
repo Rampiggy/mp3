@@ -18,6 +18,7 @@ async function getUser(rawId, res) {
 	} catch {
 		const userResponse = {
 			message: `Not found. '${rawId}' does not parse to a valid user ID.`,
+			data: "",
 		};
 		res.status(404).json(userResponse);
 		return null;
@@ -27,6 +28,7 @@ async function getUser(rawId, res) {
 	if (user === null) {
 		const userResponse = {
 			message: `Not found. User ID '${userId}' was not found.`,
+			data: "",
 		};
 		res.status(404).json(userResponse);
 		return null;
