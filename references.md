@@ -8,6 +8,7 @@
 - https://stackoverflow.com/questions/21063587/what-is-index-js-used-for-in-node-js-projects
 - https://glubbdubdrib.com/trace-warnings/
 - https://stackoverflow.com/questions/78497380/error-accessing-non-existent-property-module-exports-in-circular-dependency
+- https://stackoverflow.com/questions/46515764/how-can-i-use-async-await-at-the-top-level/68756418#68756418
 
 ## Express
 
