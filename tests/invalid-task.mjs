@@ -3,16 +3,6 @@ import baseUrl from "./globals.mjs";
 
 const url = baseUrl + "/tasks";
 
-var TaskSchema = new mongoose.Schema({
-	name: { type: String, required: true },
-	description: String,
-	deadline: { type: Date, required: true },
-	completed: Boolean,
-	assignedUser: String,
-	assignedUserName: String,
-	dateCreated: Date,
-});
-
 const taskMissingName = {
 	name: "",
 	description: "desc 1",
