@@ -24,7 +24,17 @@ module.exports = function (router) {
 			assignedUserName: req.body.assignedUser ?? "unassigned",
 			dateCreated: new Date(),
 		});
-		await newTask.save();
+
+		try {
+			await newTask.save();
+		} catch (error) {
+			const taskResponse = {
+				message: `Bad request. ${error}`,
+				data: "",
+			};
+			res.status(400).json(taskResponse);
+			return;
+		}
 
 		const userToUpdate = await getUser(newTask.assignedUser, res);
 		userToUpdate.pendingTasks.push(newTask._id);
