@@ -30,6 +30,7 @@
 - https://mongoosejs.com/docs/documents.html#updating-using-save
 - https://mongoosejs.com/docs/models.html#deleting
 - https://mongodb.github.io/node-mongodb-native/7.0/classes/ClientSession.html#withTransaction
+- https://mongoosejs.com/docs/validation.html
 
 ## JavaScript
 

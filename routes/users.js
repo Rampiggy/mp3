@@ -15,15 +15,23 @@ module.exports = function (router) {
 	});
 
 	usersRoute.post(async function (req, res) {
-		if (!isValidRequiredFields(req, res)) return;
-
 		const newUser = new User({
 			name: req.body.name,
 			email: req.body.email,
 			pendingTasks: req.body.pendingTasks ?? [],
 			dateCreated: new Date(),
 		});
-		await newUser.save();
+
+		try {
+			await newUser.save();
+		} catch (error) {
+			const userResponse = {
+				message: `Bad request. ${error}`,
+				data: "",
+			};
+			res.status(400).json(userResponse);
+			return;
+		}
 
 		newUser.pendingTasks.forEach(async (taskId) => {
 			const taskToUpdate = await getTask(taskId, res);
@@ -41,25 +49,3 @@ module.exports = function (router) {
 
 	return router;
 };
-
-function isValidRequiredFields(req, res) {
-	if (!req.body.name) {
-		const userResponse = {
-			message: "Bad request. Property 'name' is missing.",
-			data: "",
-		};
-		res.status(400).json(userResponse);
-		return false;
-	}
-
-	if (!req.body.email) {
-		const userResponse = {
-			message: "Bad request. Property 'email' is missing.",
-			data: "",
-		};
-		res.status(400).json(userResponse);
-		return false;
-	}
-
-	return true;
-}
