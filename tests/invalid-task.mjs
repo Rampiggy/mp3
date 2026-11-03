@@ -3,6 +3,9 @@ import baseUrl from "./globals.mjs";
 
 const url = baseUrl + "/tasks";
 
+console.log("Test start.\n");
+
+console.log("POST: Task missing name error...\n");
 const taskMissingName = {
 	name: "",
 	description: "desc 1",
@@ -11,7 +14,6 @@ const taskMissingName = {
 	assignedUser: "foo",
 	assignedUserName: "bar",
 };
-console.log("POST task missing name...\n");
 try {
 	await axios.post(url, taskMissingName);
 } catch (error) {
@@ -19,6 +21,7 @@ try {
 }
 console.log();
 
+console.log("POST: Task missing deadline error...\n");
 const taskMissingDeadline = {
 	name: "deadline missing",
 	description: "desc 1",
@@ -27,7 +30,6 @@ const taskMissingDeadline = {
 	assignedUser: "foo",
 	assignedUserName: "bar",
 };
-console.log("POST task missing deadline...\n");
 try {
 	await axios.post(url, taskMissingDeadline);
 } catch (error) {
@@ -36,7 +38,7 @@ try {
 console.log();
 
 const getTasksResponse = (await axios.get(url)).data;
-console.log("GET tasks...\n");
+console.log("GET: No tasks returned...\n");
 console.log(getTasksResponse);
 console.log();
 

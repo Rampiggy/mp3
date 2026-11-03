@@ -4,17 +4,19 @@ import baseUrl from "./globals.mjs";
 const usersUrl = baseUrl + "/users";
 const tasksUrl = baseUrl + "/tasks";
 
+console.log("Test start.\n");
+
+console.log("POST: User with no tasks...\n");
 const user = {
 	name: "john doe",
 	email: "john.doe@test.com",
 	pendingTasks: [],
 };
-
 const postUserResponse = (await axios.post(usersUrl, user)).data;
-console.log("POST user...\n");
 console.log(postUserResponse);
 console.log();
 
+console.log("POST: Task assigned to nonexistent user error...\n");
 let task = {
 	name: "task 1",
 	description: "desc 1",
@@ -23,7 +25,6 @@ let task = {
 	assignedUser: "foo",
 	assignedUserName: "bar",
 };
-
 try {
 	await axios.post(tasksUrl, task);
 } catch (error) {
@@ -31,8 +32,8 @@ try {
 }
 console.log();
 
+console.log("POST: Task with nonmatching user and username error...\n");
 task.assignedUser = postUserResponse.data._id;
-
 try {
 	await axios.post(tasksUrl, task);
 } catch (error) {
@@ -40,12 +41,10 @@ try {
 }
 console.log();
 
-task.assignedUserName = postUserResponse.data.name;
-
-const deleteResponse = (await axios.delete(`${usersUrl}/${userPostResponse.data._id}`))
+console.log("DELETE user with empty tasks...\n");
+const deleteUserResponse = (await axios.delete(`${usersUrl}/${userPostResponse.data._id}`))
 	.data;
-console.log("DELETE user...\n");
-console.log(deleteResponse);
+console.log(deleteUserResponse);
 console.log();
 
 console.log("Test completed.");
