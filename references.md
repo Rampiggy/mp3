@@ -47,3 +47,7 @@
 ## Axios
 
 - https://axios.rest/pages/getting-started/examples/commonjs.html
+
+## curl
+
+- https://linuxize.com/post/curl-post-request/
