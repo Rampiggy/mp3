@@ -5,7 +5,6 @@ const url = baseUrl + "/users";
 const joeSchmoEmptyArrayOfTasks = {
 	name: "joe schmo",
 	email: "joe.schmo@test.com",
-	pendingTasks: [],
 };
 
 const postResponse = (await axios.post(url, joeSchmoEmptyArrayOfTasks)).data;
