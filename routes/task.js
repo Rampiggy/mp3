@@ -82,6 +82,15 @@ function taskRouter(router) {
 			return;
 		}
 
+		// SELECT
+		//try {
+		//	const parsedSelect = JSON.parse(req.query.select);
+		//	if ()
+		//	tasks = await Task.find(parsedSelect).lean();
+		//} catch {
+		//	tasks = await Task.find().lean();
+		//}
+
 		const taskResponse = {
 			message: "OK",
 			data: taskToUpdate,

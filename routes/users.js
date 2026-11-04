@@ -5,77 +5,36 @@ module.exports = function (router) {
 	var usersRoute = router.route("/users");
 
 	usersRoute.get(async function (req, res) {
+		let users = User;
+
 		// WHERE
-		let users = null;
-		try {
-			const parsedWhere = JSON.parse(req.query.where);
-			users = await User.find(parsedWhere).lean();
-		} catch {
-			users = await User.find().lean();
-		}
-
-		// SORT
-		try {
-			const parsedSort = JSON.parse(req.query.sort);
-			users.sort((a, b) => {
-				if (parsedSort.name !== undefined) {
-					if (parsedSort.name == 1) {
-						if (a.name > b.name) return 1;
-						if (a.name < b.name) return -1;
-					}
-					if (a.name > b.name) return -1;
-					if (a.name < b.name) return 1;
-				}
-
-				if (parsedSort.email !== undefined) {
-					if (parsedSort.email == 1) {
-						if (a.email > b.email) return 1;
-						if (a.email < b.email) return -1;
-					}
-					if (a.email > b.email) return -1;
-					if (a.email < b.email) return 1;
-				}
-
-				if (parsedSort.pendingTasks !== undefined) {
-					if (parsedSort.pendingTasks == 1) {
-						if (a.pendingTasks > b.pendingTasks) return 1;
-						if (a.pendingTasks < b.pendingTasks) return -1;
-					}
-					if (a.pendingTasks > b.pendingTasks) return -1;
-					if (a.pendingTasks < b.pendingTasks) return 1;
-				}
-
-				if (parsedSort.dateCreated !== undefined) {
-					if (parsedSort.dateCreated == 1) {
-						if (a.dateCreated > b.dateCreated) return 1;
-						if (a.dateCreated < b.dateCreated) return -1;
-					}
-					if (a.dateCreated > b.dateCreated) return -1;
-					if (a.dateCreated < b.dateCreated) return 1;
-				}
-
-				return 0;
-			});
-		} catch {}
-
-		// SKIP
-		try {
-			users = users.slice(req.query.skip);
-		} catch {}
+		const where = req.query.where;
+		if (where) users = users.find(JSON.parse(req.query.where));
+		else users = users.find();
 
 		// LIMIT
-		try {
-			users = users.slice(0, req.query.limit);
-		} catch {}
+		const limit = req.query.limit;
+		if (limit) users = users.limit(limit);
+
+		// SORT
+		const sort = req.query.sort;
+		if (sort) users = users.sort(JSON.parse(req.query.sort));
+
+		// SKIP
+		const skip = req.query.skip;
+		if (skip) users = users.skip(skip);
+
+		// SELECT
+		const select = req.query.select;
+		if (select) users = users.select(JSON.parse(req.query.select));
 
 		// COUNT
-		if (req.query.limit === "true") {
-			users = users.length;
-		}
+		const count = req.query.count;
+		if (count) users = users.count(count);
 
 		const usersResponse = {
 			message: "OK",
-			data: users,
+			data: await users,
 		};
 		res.status(200).json(usersResponse);
 	});

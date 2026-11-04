@@ -5,104 +5,36 @@ module.exports = function (router) {
 	var tasksRoute = router.route("/tasks");
 
 	tasksRoute.get(async function (req, res) {
+		let tasks = task;
+
 		// WHERE
-		let tasks = null;
-		try {
-			const parsedWhere = JSON.parse(req.query.where);
-			tasks = await Task.find(parsedWhere).lean();
-		} catch {
-			tasks = await Task.find().lean();
-		}
-
-		// SORT
-		try {
-			const parsedSort = JSON.parse(req.query.sort);
-			tasks.sort((a, b) => {
-				if (parsedSort.name !== undefined) {
-					if (parsedSort.name == 1) {
-						if (a.name > b.name) return 1;
-						if (a.name < b.name) return -1;
-					}
-					if (a.name > b.name) return -1;
-					if (a.name < b.name) return 1;
-				}
-
-				if (parsedSort.description !== undefined) {
-					if (parsedSort.description == 1) {
-						if (a.description > b.description) return 1;
-						if (a.description < b.description) return -1;
-					}
-					if (a.description > b.description) return -1;
-					if (a.description < b.description) return 1;
-				}
-
-				if (parsedSort.deadline !== undefined) {
-					if (parsedSort.deadline == 1) {
-						if (a.deadline > b.deadline) return 1;
-						if (a.deadline < b.deadline) return -1;
-					}
-					if (a.deadline > b.deadline) return -1;
-					if (a.deadline < b.deadline) return 1;
-				}
-
-				if (parsedSort.completed !== undefined) {
-					if (parsedSort.completed == 1) {
-						if (a.completed > b.completed) return 1;
-						if (a.completed < b.completed) return -1;
-					}
-					if (a.completed > b.completed) return -1;
-					if (a.completed < b.completed) return 1;
-				}
-
-				if (parsedSort.assignedUser !== undefined) {
-					if (parsedSort.assignedUser == 1) {
-						if (a.assignedUser > b.assignedUser) return 1;
-						if (a.assignedUser < b.assignedUser) return -1;
-					}
-					if (a.assignedUser > b.assignedUser) return -1;
-					if (a.assignedUser < b.assignedUser) return 1;
-				}
-
-				if (parsedSort.assignedUserName !== undefined) {
-					if (parsedSort.assignedUserName == 1) {
-						if (a.assignedUserName > b.assignedUserName) return 1;
-						if (a.assignedUserName < b.assignedUserName) return -1;
-					}
-					if (a.assignedUserName > b.assignedUserName) return -1;
-					if (a.assignedUserName < b.assignedUserName) return 1;
-				}
-
-				if (parsedSort.dateCreated !== undefined) {
-					if (parsedSort.dateCreated == 1) {
-						if (a.dateCreated > b.dateCreated) return 1;
-						if (a.dateCreated < b.dateCreated) return -1;
-					}
-					if (a.dateCreated > b.dateCreated) return -1;
-					if (a.dateCreated < b.dateCreated) return 1;
-				}
-
-				return 0;
-			});
-		} catch {}
-
-		// SKIP
-		try {
-			tasks = tasks.slice(req.query.skip);
-		} catch {}
+		const where = req.query.where;
+		if (where) tasks = tasks.find(JSON.parse(req.query.where));
+		else tasks = tasks.find();
 
 		// LIMIT
-		try {
-			tasks = tasks.slice(0, req.query.limit);
-		} catch {}
+		const limit = req.query.limit;
+		if (limit) tasks = tasks.limit(limit);
+
+		// SORT
+		const sort = req.query.sort;
+		if (sort) tasks = tasks.sort(JSON.parse(req.query.sort));
+
+		// SKIP
+		const skip = req.query.skip;
+		if (skip) tasks = tasks.skip(skip);
+
+		// SELECT
+		const select = req.query.select;
+		if (select) tasks = tasks.select(JSON.parse(req.query.select));
 
 		// COUNT
-		if (req.query.limit === "true") {
-			tasks = tasks.length;
-		}
+		const count = req.query.count;
+		if (count) tasks = tasks.count(count);
 
 		const tasksResponse = {
 			message: "OK",
-			data: tasks,
+			data: await tasks,
 		};
 		res.status(200).json(tasksResponse);
 	});
