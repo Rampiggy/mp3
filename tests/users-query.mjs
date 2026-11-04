@@ -34,6 +34,10 @@ console.log("GET: No users...");
 console.log((await axios.get(`${usersUrl}?where={"name":"none"}`)).data);
 console.log();
 
+console.log("GET: Name descending...");
+console.log((await axios.get(`${usersUrl}?sort={"name":-1}`)).data);
+console.log();
+
 await axios.delete(`${usersUrl}/${postUserResponse1.data._id}`);
 await axios.delete(`${usersUrl}/${postUserResponse2.data._id}`);
 await axios.delete(`${usersUrl}/${postUserResponse3.data._id}`);

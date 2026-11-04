@@ -5,17 +5,56 @@ module.exports = function (router) {
 	var usersRoute = router.route("/users");
 
 	usersRoute.get(async function (req, res) {
-		let parsedWhere = null;
-		try {
-			parsedWhere = JSON.parse(req.query.where);
-		} catch {}
-
 		let users = null;
-		if (parsedWhere) {
+		try {
+			const parsedWhere = JSON.parse(req.query.where);
 			users = await User.find(parsedWhere).lean();
-		} else {
+		} catch {
 			users = await User.find().lean();
 		}
+
+		try {
+			const parsedSort = JSON.parse(req.query.sort);
+			users.sort((a, b) => {
+				if (parsedSort.name !== undefined) {
+					if (parsedSort.name == 1) {
+						if (a.name > b.name) return 1;
+						if (a.name < b.name) return -1;
+					}
+					if (a.name > b.name) return -1;
+					if (a.name < b.name) return 1;
+				}
+
+				if (parsedSort.email !== undefined) {
+					if (parsedSort.email == 1) {
+						if (a.email > b.email) return 1;
+						if (a.email < b.email) return -1;
+					}
+					if (a.email > b.email) return -1;
+					if (a.email < b.email) return 1;
+				}
+
+				if (parsedSort.pendingTasks !== undefined) {
+					if (parsedSort.pendingTasks == 1) {
+						if (a.pendingTasks > b.pendingTasks) return 1;
+						if (a.pendingTasks < b.pendingTasks) return -1;
+					}
+					if (a.pendingTasks > b.pendingTasks) return -1;
+					if (a.pendingTasks < b.pendingTasks) return 1;
+				}
+
+				if (parsedSort.dateCreated !== undefined) {
+					if (parsedSort.dateCreated == 1) {
+						if (a.dateCreated > b.dateCreated) return 1;
+						if (a.dateCreated < b.dateCreated) return -1;
+					}
+					if (a.dateCreated > b.dateCreated) return -1;
+					if (a.dateCreated < b.dateCreated) return 1;
+				}
+
+				return 0;
+			});
+		} catch {}
 
 		const usersResponse = {
 			message: "OK",
