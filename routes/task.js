@@ -113,10 +113,10 @@ function taskRouter(router) {
 
 		await Task.deleteOne({ _id: taskToDelete._id });
 
-		const taskResponse = {
-			message: "OK",
-		};
-		res.status(200).json(taskResponse);
+		//const taskResponse = {
+		//	message: "OK",
+		//};
+		res.status(204).json({});
 	});
 
 	return router;

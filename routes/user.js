@@ -83,10 +83,10 @@ function userRouter(router) {
 
 		await User.deleteOne({ _id: userToDelete._id });
 
-		const userResponse = {
-			message: "OK",
-		};
-		res.status(200).json(userResponse);
+		//const userResponse = {
+		//	message: "OK",
+		//};
+		res.status(204).json({});
 	});
 
 	return router;
