@@ -24,41 +24,37 @@ function userRouter(router) {
 		if (userToUpdate === null) return;
 
 		const session = await mongoose.startSession();
-		let isSuccessful = true;
-		session.withTransaction(async () => {
-			userToUpdate.pendingTasks.forEach(async (taskId) => {
-				const taskToUnassign = await getTask(taskId, res);
 
-				if (taskToUnassign === null) {
-					isSuccessful = false;
-					throw Error;
-				}
+		try {
+			await session.withTransaction(async () => {
+				userToUpdate.pendingTasks.forEach(async (taskId) => {
+					const taskToUnassign = await getTask(taskId, res);
 
-				taskToUnassign.assignedUser = "";
-				taskToUnassign.assignedUserName = "unassigned";
-				await taskToUnassign.save();
+					if (taskToUnassign === null) throw Error;
+
+					taskToUnassign.assignedUser = "";
+					taskToUnassign.assignedUserName = "unassigned";
+					await taskToUnassign.save();
+				});
+
+				req.body.pendingTasks.forEach(async (taskId) => {
+					const taskToUpdate = await getTask(taskId, res);
+
+					if (taskToUpdate === null) throw Error;
+
+					taskToUpdate.assignedUser = userToUpdate._id;
+					taskToUpdate.assignedUserName = userToUpdate.name;
+					await taskToUpdate.save();
+				});
+
+				userToUpdate.name = req.body.name;
+				userToUpdate.email = req.body.email;
+				userToUpdate.pendingTasks = req.body.pendingTasks ?? [];
+				await userToUpdate.save();
 			});
-
-			req.body.pendingTasks.forEach(async (taskId) => {
-				const taskToUpdate = await getTask(taskId, res);
-
-				if (taskToUpdate === null) {
-					isSuccessful = false;
-					throw Error;
-				}
-
-				taskToUpdate.assignedUser = userToUpdate._id;
-				taskToUpdate.assignedUserName = userToUpdate.name;
-				await taskToUpdate.save();
-			});
-
-			userToUpdate.name = req.body.name;
-			userToUpdate.email = req.body.email;
-			userToUpdate.pendingTasks = req.body.pendingTasks ?? [];
-			await userToUpdate.save();
-		});
-
-		if (!isSuccessful) return;
+		} catch {
+			return;
+		}
 
 		const userResponse = {
 			message: "OK",
