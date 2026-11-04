@@ -42,7 +42,7 @@ function taskRouter(router) {
 					await unassignUser.save();
 				}
 
-				if (req.body.assignedUser !== "") {
+				if (req.body.assignedUser) {
 					const assignUser = await getUser(
 						req.body.assignedUser,
 						res,
@@ -50,8 +50,23 @@ function taskRouter(router) {
 
 					if (assignUser === null) throw Error;
 
-					assignUser.pendingTasks.push(taskToUpdate._id);
-					await assignUser.save();
+					if (req.body.assignedUserName != assignUser.name) {
+						const taskResponse = {
+							message:
+								"Bad request. Assigned user id does not match to name.",
+							data: "",
+						};
+						res.status(400).json(taskResponse);
+					}
+
+					if (
+						!req.body.completed ||
+						!req.body.completed == false ||
+						!req.body.completed == "false"
+					) {
+						assignUser.pendingTasks.push(taskToUpdate._id);
+						await assignUser.save();
+					}
 				}
 
 				taskToUpdate.name = req.body.name;
@@ -60,7 +75,7 @@ function taskRouter(router) {
 				taskToUpdate.completed = req.body.completed ?? false;
 				taskToUpdate.assignedUser = req.body.assignedUser ?? "";
 				taskToUpdate.assignedUserName =
-					req.body.assignedUser ?? "unassigned";
+					req.body.assignedUserName ?? "unassigned";
 				await taskToUpdate.save();
 			});
 		} catch {
