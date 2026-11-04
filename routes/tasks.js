@@ -5,7 +5,100 @@ module.exports = function (router) {
 	var tasksRoute = router.route("/tasks");
 
 	tasksRoute.get(async function (_, res) {
-		const tasks = await Task.find().lean();
+		// WHERE
+		let tasks = null;
+		try {
+			const parsedWhere = JSON.parse(req.query.where);
+			tasks = await Task.find(parsedWhere).lean();
+		} catch {
+			tasks = await Task.find().lean();
+		}
+
+		// SORT
+		try {
+			const parsedSort = JSON.parse(req.query.sort);
+			tasks.sort((a, b) => {
+				if (parsedSort.name !== undefined) {
+					if (parsedSort.name == 1) {
+						if (a.name > b.name) return 1;
+						if (a.name < b.name) return -1;
+					}
+					if (a.name > b.name) return -1;
+					if (a.name < b.name) return 1;
+				}
+
+				if (parsedSort.description !== undefined) {
+					if (parsedSort.description == 1) {
+						if (a.description > b.description) return 1;
+						if (a.description < b.description) return -1;
+					}
+					if (a.description > b.description) return -1;
+					if (a.description < b.description) return 1;
+				}
+
+				if (parsedSort.deadline !== undefined) {
+					if (parsedSort.deadline == 1) {
+						if (a.deadline > b.deadline) return 1;
+						if (a.deadline < b.deadline) return -1;
+					}
+					if (a.deadline > b.deadline) return -1;
+					if (a.deadline < b.deadline) return 1;
+				}
+
+				if (parsedSort.completed !== undefined) {
+					if (parsedSort.completed == 1) {
+						if (a.completed > b.completed) return 1;
+						if (a.completed < b.completed) return -1;
+					}
+					if (a.completed > b.completed) return -1;
+					if (a.completed < b.completed) return 1;
+				}
+
+				if (parsedSort.assignedUser !== undefined) {
+					if (parsedSort.assignedUser == 1) {
+						if (a.assignedUser > b.assignedUser) return 1;
+						if (a.assignedUser < b.assignedUser) return -1;
+					}
+					if (a.assignedUser > b.assignedUser) return -1;
+					if (a.assignedUser < b.assignedUser) return 1;
+				}
+
+				if (parsedSort.assignedUserName !== undefined) {
+					if (parsedSort.assignedUserName == 1) {
+						if (a.assignedUserName > b.assignedUserName) return 1;
+						if (a.assignedUserName < b.assignedUserName) return -1;
+					}
+					if (a.assignedUserName > b.assignedUserName) return -1;
+					if (a.assignedUserName < b.assignedUserName) return 1;
+				}
+
+				if (parsedSort.dateCreated !== undefined) {
+					if (parsedSort.dateCreated == 1) {
+						if (a.dateCreated > b.dateCreated) return 1;
+						if (a.dateCreated < b.dateCreated) return -1;
+					}
+					if (a.dateCreated > b.dateCreated) return -1;
+					if (a.dateCreated < b.dateCreated) return 1;
+				}
+
+				return 0;
+			});
+		} catch {}
+
+		// SKIP
+		try {
+			tasks = tasks.slice(req.query.skip);
+		} catch {}
+
+		// LIMIT
+		try {
+			tasks = tasks.slice(0, req.query.limit);
+		} catch {}
+
+		// COUNT
+		if (req.query.limit === "true") {
+			tasks = tasks.length;
+		}
 
 		const tasksResponse = {
 			message: "OK",
