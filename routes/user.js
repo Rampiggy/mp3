@@ -11,7 +11,7 @@ function userRouter(router) {
 
 		if (currUser === null) return;
 
-		const user = user.findOne({ _id: userId });
+		let user = User.findOne({ _id: userId });
 
 		// SELECT
 		const select = req.query.select;
@@ -19,7 +19,7 @@ function userRouter(router) {
 
 		const userResponse = {
 			message: "OK",
-			data: currUser,
+			data: await user,
 		};
 		res.status(200).json(userResponse);
 	});
