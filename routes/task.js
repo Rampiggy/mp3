@@ -11,9 +11,15 @@ function taskRouter(router) {
 
 		if (currTask === null) return;
 
+		const task = Task.findOne({ _id: taskId });
+
+		// SELECT
+		const select = req.query.select;
+		if (select) task = task.select(JSON.parse(req.query.select));
+
 		const taskResponse = {
 			message: "OK",
-			data: currTask,
+			data: await task,
 		};
 		res.status(200).json(taskResponse);
 	});
@@ -81,15 +87,6 @@ function taskRouter(router) {
 		} catch {
 			return;
 		}
-
-		// SELECT
-		//try {
-		//	const parsedSelect = JSON.parse(req.query.select);
-		//	if ()
-		//	tasks = await Task.find(parsedSelect).lean();
-		//} catch {
-		//	tasks = await Task.find().lean();
-		//}
 
 		const taskResponse = {
 			message: "OK",
