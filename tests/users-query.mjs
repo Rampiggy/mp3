@@ -42,6 +42,10 @@ console.log("SKIP: First two users...");
 console.log((await axios.get(`${usersUrl}?skip=2`)).data);
 console.log();
 
+console.log("LIMIT: Two users...");
+console.log((await axios.get(`${usersUrl}?limit=2`)).data);
+console.log();
+
 await axios.delete(`${usersUrl}/${postUserResponse1.data._id}`);
 await axios.delete(`${usersUrl}/${postUserResponse2.data._id}`);
 await axios.delete(`${usersUrl}/${postUserResponse3.data._id}`);

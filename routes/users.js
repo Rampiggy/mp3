@@ -5,6 +5,7 @@ module.exports = function (router) {
 	var usersRoute = router.route("/users");
 
 	usersRoute.get(async function (req, res) {
+		// WHERE
 		let users = null;
 		try {
 			const parsedWhere = JSON.parse(req.query.where);
@@ -13,6 +14,7 @@ module.exports = function (router) {
 			users = await User.find().lean();
 		}
 
+		// SORT
 		try {
 			const parsedSort = JSON.parse(req.query.sort);
 			users.sort((a, b) => {
@@ -56,9 +58,20 @@ module.exports = function (router) {
 			});
 		} catch {}
 
+		// SKIP
 		try {
 			users = users.slice(req.query.skip);
 		} catch {}
+
+		// LIMIT
+		try {
+			users = users.slice(0, req.query.limit);
+		} catch {}
+
+		// COUNT
+		if (req.query.limit === "true") {
+			users = users.length;
+		}
 
 		const usersResponse = {
 			message: "OK",
