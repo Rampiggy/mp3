@@ -19,6 +19,7 @@
 - https://www.youtube.com/watch?v=V2_lSMpp2b8
 - https://expressjs.com/en/5x/api/request/
 - https://expressjs.com/en/5x/api/response/
+- https://www.geeksforgeeks.org/web-tech/express-js-req-query-property/
 
 ## Mongoose
 
@@ -39,6 +40,7 @@
 - https://softwareengineering.stackexchange.com/questions/402369/good-practice-for-javascript-es6-data-objects
 - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch
 - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+- https://stackoverflow.com/questions/10976897/converting-a-string-to-json-object
 
 ## Postman
 

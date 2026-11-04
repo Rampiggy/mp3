@@ -4,8 +4,18 @@ const getTask = require("../models/task.js").getTask;
 module.exports = function (router) {
 	var usersRoute = router.route("/users");
 
-	usersRoute.get(async function (_, res) {
-		const users = await User.find().lean();
+	usersRoute.get(async function (req, res) {
+		let parsedWhere = null;
+		try {
+			parsedWhere = JSON.parse(req.query.where);
+		} catch {}
+
+		let users = null;
+		if (parsedWhere) {
+			users = await User.find(parsedWhere).lean();
+		} else {
+			users = await User.find().lean();
+		}
 
 		const usersResponse = {
 			message: "OK",
