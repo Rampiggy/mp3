@@ -19,30 +19,36 @@ function taskRouter(router) {
 	});
 
 	taskRoute.put(async function (req, res) {
-		const taskToUpdate = await getTask(req, res);
+		const taskToUpdate = await getTask(req.params.id, res);
 
 		if (taskToUpdate === null) return;
 
 		const session = await mongoose.startSession();
 		let isSuccessful = true;
 		session.withTransaction(async () => {
-			const unassignUser = await getUser(taskToDelete.assignedUser, res);
+			if (taskToUpdate.assignedUser !== "") {
+				const unassignUser = await getUser(
+					taskToUpdate.assignedUser,
+					res,
+				);
 
-			if (unassignUser === null) {
-				isSuccessful = false;
-				throw Error;
+				if (unassignUser === null) {
+					isSuccessful = false;
+					throw Error;
+				}
+
+				unassignUser.pendingTasks = unassignUser.pendingTasks.filter(
+					(taskId) => {
+						taskId != taskToUpdate._id;
+					},
+				);
+				await unassignUser.save();
 			}
 
-			unassignUser.pendingTasks = unassignUser.pendingTasks.filter(
-				(taskId) => {
-					taskId != taskToUpdate._id;
-				},
-			);
-			await unassignUser.save();
-
-			if (req.body.assignedUser != "") {
+			if (req.body.assignedUser !== "") {
+				console.log("getting user to assign");
 				const assignUser = await getUser(
-					taskToDelete.assignedUser,
+					taskToUpdate.assignedUser,
 					res,
 				);
 
@@ -56,14 +62,16 @@ function taskRouter(router) {
 			}
 
 			taskToUpdate.name = req.body.name;
-			taskToUpdate.description = req.body.description;
+			taskToUpdate.description = req.body.description ?? "";
 			taskToUpdate.deadline = req.body.deadline;
-			taskToUpdate.completed = req.body.completed;
+			taskToUpdate.completed = req.body.completed ?? false;
 			taskToUpdate.assignedUser = req.body.assignedUser ?? "";
 			taskToUpdate.assignedUserName =
 				req.body.assignedUser ?? "unassigned";
 			await taskToUpdate.save();
 		});
+
+		if (!isSuccessful) return;
 
 		const taskResponse = {
 			message: "OK",
