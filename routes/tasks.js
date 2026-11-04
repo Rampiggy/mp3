@@ -30,7 +30,7 @@ module.exports = function (router) {
 
 		// COUNT
 		const count = req.query.count;
-		if (count) tasks = tasks.count(count);
+		if (count && req.query.count == "true") tasks = tasks.countDocuments();
 
 		const tasksResponse = {
 			message: "OK",
