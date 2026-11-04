@@ -4,7 +4,7 @@ const getUser = require("../models/user.js").getUser;
 module.exports = function (router) {
 	var tasksRoute = router.route("/tasks");
 
-	tasksRoute.get(async function (_, res) {
+	tasksRoute.get(async function (req, res) {
 		// WHERE
 		let tasks = null;
 		try {
