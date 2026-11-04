@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("../models/user.js").User;
+const Task = require("../models/task.js").Task;
 const getUser = require("../models/user.js").getUser;
 const getTask = require("../models/task.js").getTask;
 
@@ -75,10 +76,12 @@ function userRouter(router) {
 		if (userToDelete === null) return;
 
 		userToDelete.pendingTasks.forEach(async (task) => {
-			const taskToUnassign = await getTask(task._id, res);
-			taskToUnassign.assignedUser = "";
-			taskToUnassign.assignedUserName = "unassigned";
-			await taskToUnassign.save();
+			const taskToUnassign = await getTasky(task._id, res);
+			if (taskToUnassign !== null) {
+				taskToUnassign.assignedUser = "";
+				taskToUnassign.assignedUserName = "unassigned";
+				await taskToUnassign.save();
+			}
 		});
 
 		await User.deleteOne({ _id: userToDelete._id });
@@ -93,3 +96,14 @@ function userRouter(router) {
 }
 
 module.exports = { getUser, userRouter };
+
+async function getTasky(rawId) {
+	let taskId = null;
+	try {
+		taskId = new mongoose.Types.ObjectId(rawId);
+	} catch {
+		return null;
+	}
+
+	return await Task.findOne({ _id: taskId });
+}
