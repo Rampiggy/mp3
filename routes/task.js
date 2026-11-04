@@ -100,13 +100,15 @@ function taskRouter(router) {
 
 		if (taskToDelete === null) return;
 
-		const userToUpdate = await getUser(taskToDelete.assignedUser, res);
-		userToUpdate.pendingTasks = userToUpdate.pendingTasks.filter(
-			(taskId) => {
-				taskId != taskToDelete._id;
-			},
-		);
-		userToUpdate.save();
+		const userToUpdate = await getUsery(taskToDelete.assignedUser);
+		if (userToUpdate !== null) {
+			userToUpdate.pendingTasks = userToUpdate.pendingTasks.filter(
+				(taskId) => {
+					taskId != taskToDelete._id;
+				},
+			);
+			userToUpdate.save();
+		}
 
 		await Task.deleteOne({ _id: taskToDelete._id });
 
@@ -120,3 +122,14 @@ function taskRouter(router) {
 }
 
 module.exports = { getTask, taskRouter };
+
+async function getUsery(rawId) {
+	let userId = null;
+	try {
+		userId = new mongoose.Types.ObjectId(rawId);
+	} catch {
+		return null;
+	}
+
+	return await User.findOne({ _id: userId });
+}
