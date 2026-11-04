@@ -22,20 +22,24 @@ const user3 = {
 };
 const postUserResponse3 = (await axios.post(usersUrl, user3)).data;
 
-console.log("GET: All the users...");
+console.log("WHERE: All the users...");
 console.log((await axios.get(`${usersUrl}?`)).data);
 console.log();
 
-console.log("GET: Second user...");
+console.log("WHERE: Second user...");
 console.log((await axios.get(`${usersUrl}?where={"name":"user 2"}`)).data);
 console.log();
 
-console.log("GET: No users...");
+console.log("WHERE: No users...");
 console.log((await axios.get(`${usersUrl}?where={"name":"none"}`)).data);
 console.log();
 
-console.log("GET: Name descending...");
+console.log("SORT: Name descending...");
 console.log((await axios.get(`${usersUrl}?sort={"name":-1}`)).data);
+console.log();
+
+console.log("SKIP: First two users...");
+console.log((await axios.get(`${usersUrl}?skip=2`)).data);
 console.log();
 
 await axios.delete(`${usersUrl}/${postUserResponse1.data._id}`);

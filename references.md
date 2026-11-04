@@ -42,6 +42,9 @@
 - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 - https://stackoverflow.com/questions/10976897/converting-a-string-to-json-object
 - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof
+- https://stackoverflow.com/questions/42970515/javascript-built-in-methods-how-to-skip-the-first-iteration
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
 
 ## Postman
 

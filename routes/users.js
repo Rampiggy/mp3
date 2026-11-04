@@ -56,6 +56,10 @@ module.exports = function (router) {
 			});
 		} catch {}
 
+		try {
+			users = users.slice(req.query.skip);
+		} catch {}
+
 		const usersResponse = {
 			message: "OK",
 			data: users,
