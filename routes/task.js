@@ -24,54 +24,48 @@ function taskRouter(router) {
 		if (taskToUpdate === null) return;
 
 		const session = await mongoose.startSession();
-		let isSuccessful = true;
-		session.withTransaction(async () => {
-			if (taskToUpdate.assignedUser !== "") {
-				const unassignUser = await getUser(
-					taskToUpdate.assignedUser,
-					res,
-				);
 
-				if (unassignUser === null) {
-					isSuccessful = false;
-					throw Error;
+		try {
+			await session.withTransaction(async () => {
+				if (taskToUpdate.assignedUser) {
+					const unassignUser = await getUser(
+						taskToUpdate.assignedUser,
+						res,
+					);
+
+					if (unassignUser === null) throw Error;
+
+					unassignUser.pendingTasks =
+						unassignUser.pendingTasks.filter((taskId) => {
+							taskId != taskToUpdate._id;
+						});
+					await unassignUser.save();
 				}
 
-				unassignUser.pendingTasks = unassignUser.pendingTasks.filter(
-					(taskId) => {
-						taskId != taskToUpdate._id;
-					},
-				);
-				await unassignUser.save();
-			}
+				if (req.body.assignedUser !== "") {
+					const assignUser = await getUser(
+						req.body.assignedUser,
+						res,
+					);
 
-			if (req.body.assignedUser !== "") {
-				console.log("getting user to assign");
-				const assignUser = await getUser(
-					taskToUpdate.assignedUser,
-					res,
-				);
+					if (assignUser === null) throw Error;
 
-				if (assignUser === null) {
-					isSuccessful = false;
-					throw Error;
+					assignUser.pendingTasks.push(taskToUpdate._id);
+					await assignUser.save();
 				}
 
-				assignUser.pendingTasks.push(taskToUpdate._id);
-				await assignUser.save();
-			}
-
-			taskToUpdate.name = req.body.name;
-			taskToUpdate.description = req.body.description ?? "";
-			taskToUpdate.deadline = req.body.deadline;
-			taskToUpdate.completed = req.body.completed ?? false;
-			taskToUpdate.assignedUser = req.body.assignedUser ?? "";
-			taskToUpdate.assignedUserName =
-				req.body.assignedUser ?? "unassigned";
-			await taskToUpdate.save();
-		});
-
-		if (!isSuccessful) return;
+				taskToUpdate.name = req.body.name;
+				taskToUpdate.description = req.body.description ?? "";
+				taskToUpdate.deadline = req.body.deadline;
+				taskToUpdate.completed = req.body.completed ?? false;
+				taskToUpdate.assignedUser = req.body.assignedUser ?? "";
+				taskToUpdate.assignedUserName =
+					req.body.assignedUser ?? "unassigned";
+				await taskToUpdate.save();
+			});
+		} catch {
+			return;
+		}
 
 		const taskResponse = {
 			message: "OK",

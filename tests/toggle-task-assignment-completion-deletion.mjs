@@ -35,7 +35,7 @@ console.log("PUT: Assign task to user...");
 task.assignedUser = postUserResponse.data._id;
 task.assignedUserName = postUserResponse.data.name;
 let putTaskResponse = (
-	await axios.put(`${tasksUrl}/${postTaskResponse.data._id}`)
+	await axios.put(`${tasksUrl}/${postTaskResponse.data._id}`, task)
 ).data;
 console.log(putTaskResponse);
 console.log();
@@ -48,8 +48,9 @@ console.log();
 
 console.log("PUT: Complete task assigned to user...");
 task.completed = "true";
-putTaskResponse = (await axios.put(`${tasksUrl}/${postTaskResponse.data._id}`))
-	.data;
+putTaskResponse = (
+	await axios.put(`${tasksUrl}/${postTaskResponse.data._id}`, task)
+).data;
 console.log(putTaskResponse);
 console.log();
 
@@ -61,8 +62,9 @@ console.log();
 
 console.log("PUT: Incomplete task assigned to user...");
 task.completed = "false";
-putTaskResponse = (await axios.put(`${tasksUrl}/${postTaskResponse.data._id}`))
-	.data;
+putTaskResponse = (
+	await axios.put(`${tasksUrl}/${postTaskResponse.data._id}`, task)
+).data;
 console.log(putTaskResponse);
 console.log();
 
