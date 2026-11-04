@@ -11,7 +11,7 @@ function userRouter(router) {
 
 		if (currUser === null) return;
 
-		let user = User.findOne({ _id: userId });
+		let user = User.findOne({ _id: req.params.id });
 
 		// SELECT
 		const select = req.query.select;

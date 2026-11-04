@@ -11,7 +11,7 @@ function taskRouter(router) {
 
 		if (currTask === null) return;
 
-		let task = Task.findOne({ _id: taskId });
+		let task = Task.findOne({ _id: req.params.id });
 
 		// SELECT
 		const select = req.query.select;
