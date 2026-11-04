@@ -11,6 +11,12 @@ function userRouter(router) {
 
 		if (currUser === null) return;
 
+		const user = user.findOne({ _id: userId });
+
+		// SELECT
+		const select = req.query.select;
+		if (select) user = user.select(JSON.parse(req.query.select));
+
 		const userResponse = {
 			message: "OK",
 			data: currUser,

@@ -5,7 +5,7 @@ module.exports = function (router) {
 	var tasksRoute = router.route("/tasks");
 
 	tasksRoute.get(async function (req, res) {
-		let tasks = null;
+		let tasks = Task;
 
 		// WHERE
 		const where = req.query.where;
